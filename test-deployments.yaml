@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netshoot-client
+spec:
+  selector:
+    matchLabels:
+      app: netshoot-client
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: netshoot-client
+    spec:
+      volumes:
+        - name: kind-mount
+          hostPath:
+            path: "/mnt"
+      hostNetwork: true
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: netshoot
+        image: nicolaka/netshoot:latest
+        command: ["sleep", "infinite"]
+        volumeMounts:
+          - mountPath: /mnt
+            name: kind-mount
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netshoot-server
+spec:
+  selector:
+    matchLabels:
+      app: netshoot-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: netshoot-server
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: netshoot
+        image: nicolaka/netshoot:latest
+        command: ["sleep", "infinite"]
+        resources:
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netshoot-service
+spec:
+  ports:
+  - port: 8000
+  selector:
+    app: netshoot-server
