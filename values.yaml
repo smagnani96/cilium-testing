@@ -5,7 +5,7 @@ bpf:
   monitorAggregation: none
 image:
   repository: quay.io/cilium/cilium-dev
-  tag: latest
+  tag: local
   pullPolicy: IfNotPresent
   useDigest: false
 operator:
@@ -14,7 +14,7 @@ operator:
   image:
     override: ~
     repository: quay.io/cilium/operator
-    tag: latest
+    tag: local
     useDigest: false
     pullPolicy: IfNotPresent
     suffix: ""
