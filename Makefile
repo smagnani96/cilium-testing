@@ -30,6 +30,33 @@ bounce:
 	kind load --name cilium-testing docker-image quay.io/cilium/operator-generic:local
 	kind load --name cilium-testing docker-image quay.io/cilium/cilium-dev:local
 
+.ONESHELL:
+install-debug:
+	export DOCKER_IMAGE_TAG="local"
+	export NOSTRIP=1
+	export NOOPT=1
+	export DEBUG_HOLD=true
+	cd $(CILIUM_SRC)
+	make docker-operator-generic-image
+	make dev-docker-image-debug
+	cd -
+
+	kind load --name cilium-testing docker-image quay.io/cilium/operator-generic:local
+	kind load --name cilium-testing docker-image quay.io/cilium/cilium-dev:local
+	helm -n kube-system install cilium chart -f values.yaml
+
+.ONESHELL:
+bounce-debug:
+	export DOCKER_IMAGE_TAG="local"
+	export NOSTRIP=1
+	export NOOPT=1
+	export DEBUG_HOLD=true
+	cd $(CILIUM_SRC)
+	make docker-operator-generic-image
+	make dev-docker-image-debug
+	kind load --name cilium-testing docker-image quay.io/cilium/operator-generic:local
+	kind load --name cilium-testing docker-image quay.io/cilium/cilium-dev:local
+
 update-values:
 	helm -n kube-system upgrade cilium ./chart -f values.yaml
 
