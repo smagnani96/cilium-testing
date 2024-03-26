@@ -1,10 +1,11 @@
 CILIUM_SRC ?= /home/louis/git/gopath/src/github.com/cilium/cilium-enterprise
+CILIUM_HELM_CHART ?= $(CILIUM_SRC)/install/kubernetes/cilium
 
 .PHONY: install
 
 deploy:
 	kind create cluster --config ./cluster.yaml
-	-kubectl taint nodes cilium-testing-control-plane node-role.kubernetes.io/control-plane:NoSchedule- node-role.kubernetes.io/master:NoSchedule- 
+	-kubectl taint nodes cilium-testing-control-plane node-role.kubernetes.io/control-plane:NoSchedule- node-role.kubernetes.io/master:NoSchedule-
 
 destroy:
 	kind delete cluster --name cilium-testing
@@ -19,7 +20,7 @@ install:
 
 	kind load --name cilium-testing docker-image quay.io/cilium/operator-generic:local
 	kind load --name cilium-testing docker-image quay.io/cilium/cilium-dev:local
-	helm -n kube-system install cilium chart -f values.yaml
+	helm -n kube-system install cilium $(CILIUM_HELM_CHART) -f values.yaml
 
 .ONESHELL:
 bounce:
@@ -43,7 +44,7 @@ install-debug:
 
 	kind load --name cilium-testing docker-image quay.io/cilium/operator-generic:local
 	kind load --name cilium-testing docker-image quay.io/cilium/cilium-dev:local
-	helm -n kube-system install cilium chart -f values.yaml
+	helm -n kube-system install cilium $(CILIUM_HELM_CHART) -f values.yaml
 
 .ONESHELL:
 bounce-debug:
@@ -58,11 +59,11 @@ bounce-debug:
 	kind load --name cilium-testing docker-image quay.io/cilium/cilium-dev:local
 
 update-values:
-	helm -n kube-system upgrade cilium ./chart -f values.yaml
+	helm -n kube-system upgrade cilium $(CILIUM_HELM_CHART) -f values.yaml
 
 echo-service:
 	kubectl apply -f "./migrations-svc-deployment.yaml"
 
 reinstall:
 	helm -n kube-system uninstall cilium
-	helm -n kube-system install cilium chart -f values.yaml
+	helm -n kube-system install cilium $(CILIUM_HELM_CHART) -f values.yaml
