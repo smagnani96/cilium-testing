@@ -1,5 +1,7 @@
 CILIUM_SRC ?= /home/louis/git/gopath/src/github.com/cilium/cilium-enterprise
 CILIUM_HELM_CHART ?= $(CILIUM_SRC)/install/kubernetes/cilium
+CILIUM_AGENT_LABEL ?= app.kubernetes.io/name=cilium-agent
+CILIUM_OPERATOR_LABEL ?= app.kubernetes.io/name=cilium-operator
 
 .PHONY: install
 
@@ -57,6 +59,12 @@ bounce-debug:
 	make dev-docker-image-debug
 	kind load --name cilium-testing docker-image quay.io/cilium/operator-generic:local
 	kind load --name cilium-testing docker-image quay.io/cilium/cilium-dev:local
+
+bounce-agents:
+	kubectl --namespace=kube-system delete pod -l $(CILIUM_AGENT_LABEL)
+
+bounce-operator:
+	kubectl --namespace=kube-system delete pod -l $(CILIUM_OPERATOR_LABEL)
 
 update-values:
 	helm -n kube-system upgrade cilium $(CILIUM_HELM_CHART) -f values.yaml
