@@ -7,7 +7,7 @@ CILIUM_OPERATOR_LABEL ?= app.kubernetes.io/name=cilium-operator
 
 deploy:
 	kind create cluster --config ./cluster.yaml
-	-kubectl taint nodes cilium-testing-control-plane node-role.kubernetes.io/control-plane:NoSchedule- node-role.kubernetes.io/master:NoSchedule-
+	-kubectl taint nodes cilium-testing-control-plane node-role.kubernetes.io/control-plane:NoSchedule-
 
 destroy:
 	kind delete cluster --name cilium-testing
