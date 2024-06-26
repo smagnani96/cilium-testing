@@ -18,3 +18,7 @@ operator:
     useDigest: false
     pullPolicy: IfNotPresent
     suffix: ""
+ipam:
+  mode: kubernetes
+ipv6:
+  enabled: true
