@@ -12,22 +12,24 @@ spec:
       labels:
         app: netshoot-client
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: cilium-testing-worker
       volumes:
         - name: kind-mount
           hostPath:
             path: "/mnt"
-      hostNetwork: true
+      #hostNetwork: true
       tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
       containers:
-      - name: netshoot
-        image: nicolaka/netshoot:latest
-        command: ["sleep", "infinite"]
-        volumeMounts:
-          - mountPath: /mnt
-            name: kind-mount
+        - name: netshoot
+          image: nicolaka/netshoot:latest
+          command: ["sleep", "infinite"]
+          volumeMounts:
+            - mountPath: /mnt
+              name: kind-mount
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -43,15 +45,17 @@ spec:
       labels:
         app: netshoot-server
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: cilium-testing-worker2
       tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
       containers:
-      - name: netshoot
-        image: nicolaka/netshoot:latest
-        command: ["sleep", "infinite"]
-        resources:
+        - name: netshoot
+          image: nicolaka/netshoot:latest
+          command: ["sleep", "infinite"]
+          resources:
 ---
 apiVersion: v1
 kind: Service
@@ -59,6 +63,6 @@ metadata:
   name: netshoot-service
 spec:
   ports:
-  - port: 8000
+    - port: 8000
   selector:
     app: netshoot-server
