@@ -18,7 +18,6 @@ spec:
         - name: kind-mount
           hostPath:
             path: "/mnt"
-      #hostNetwork: true
       tolerations:
         - key: node-role.kubernetes.io/master
           operator: Exists

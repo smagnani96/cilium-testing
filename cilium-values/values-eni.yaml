@@ -1,0 +1,34 @@
+MTU: 1500
+authentication:
+  mutual:
+    spire:
+      enabled: true
+      install:
+        enabled: true
+debug:
+  enabled: true
+  verbose: flow,datapath,envoy
+encryption:
+  enabled: true
+  type: ipsec
+eni:
+  enabled: true
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+ipam:
+  mode: eni
+#k8sServiceHost:
+#k8sServicePort: 443
+kubeProxyReplacement: "false"
+l7Proxy: false
+nodePort:
+  enabled: false
+nodeinit:
+  enabled: true
+operator:
+  enabled: true
+
+routingMode: native
+auto-direct-node-routes: true
